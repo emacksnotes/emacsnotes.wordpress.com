@@ -1,1 +1,1 @@
-# Repository for Emacs Lisp snippets shared on https://emacsnotes.wordpress.com/
+# Repository for Emacs Lisp snippets shared on [Emacs Notes – GNU Emacs, for Ordinary Folks](https://emacsnotes.wordpress.com/)
