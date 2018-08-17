@@ -1,13 +1,14 @@
-(define-key-after global-map
-  [menu-bar tools xwidget-webkit-browse-url]
-  `(menu-item "Browse with XWidget Webkit ..." xwidget-webkit-browse-url :enable
-	      (featurep 'xwidget-internal)
-	      :help ,(documentation 'xwidget-webkit-browse-url))
-  'browse-web)
-
 (with-eval-after-load '"xwidget"
   (when
       (featurep 'xwidget-internal)
+    (easy-menu-define my-xwidget-tools-menu nil "Menu for Xwidget Webkit."
+      `("Xwidget Webkit"
+	["Browse Url ..." xwidget-webkit-browse-url :help "Ask xwidget-webkit to browse URL"]
+	["End Edit Textarea" xwidget-webkit-end-edit-textarea :help "End editing of a webkit text area"]))
+    (easy-menu-add-item
+     (current-global-map)
+     '("menu-bar" "tools")
+     my-xwidget-tools-menu 'separator-net)
     (easy-menu-define my-xwidget-menu xwidget-webkit-mode-map "Menu for Xwidget Webkit."
       '("Xwidget"
 	["Browse Url" xwidget-webkit-browse-url :help "Ask xwidget-webkit to browse URL"]
