@@ -1,3 +1,5 @@
+;; https://raw.githubusercontent.com/emacksnotes/emacsnotes.wordpress.com/master/my-xwidget-menu.el
+
 (require 'xwidget)
 
 (when
