@@ -1,6 +1,6 @@
 (easy-menu-define my-hi-lock-menu nil "Menu for customizing regexp highlighting."
   `("Customize Regexp Highlighting"
-    ["GlobalHi Lock Mode"
+    ["Global Hi Lock Mode"
      (progn
        (customize-set-variable 'global-hi-lock-mode
 			       (not global-hi-lock-mode))
