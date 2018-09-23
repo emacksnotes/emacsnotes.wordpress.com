@@ -19,11 +19,11 @@
 	 nil nil delimit-columns-str-separator))
        (delimit-columns-str-before
 	(read-string
-	 (format "%s (%s): " "Specify a string to be inserted before all columns" delimit-columns-str-before)
+	 (format "%s (%s): " "Specify a string to be inserted before the first column" delimit-columns-str-before)
 	 nil nil delimit-columns-str-before))
        (delimit-columns-str-after
 	(read-string
-	 (format "%s (%s): " "Specify a string to be inserted after all columns" delimit-columns-str-after)
+	 (format "%s (%s): " "Specify a string to be inserted after the last column" delimit-columns-str-after)
 	 nil nil delimit-columns-str-after))
        (delimit-columns-format
 	(let*
