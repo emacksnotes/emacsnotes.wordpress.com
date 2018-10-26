@@ -31,9 +31,9 @@ With a prefix arg, remove all such highlights."
 
 (global-set-key (kbd "C-x w o") 'my-highlight-regexp-with-string)
 
-(dolist (items '("--"
-		 ["Highlight Regexp With String" my-highlight-regexp-with-string :help "(my-highlight-regexp-with-string &optional REGEXP STRING FACE)\n\nDisplay each match of REGEXP as STRING with face FACE.\nWith a prefix arg, remove all such highlights."]
-		 ["Remove String Highlights" my-remove-string-highlights :help "(my-remove-string-highlights)\n\nRemove all highlights created with `highlight-regexp-with-overlay'."]))
+(dolist (item '("--"
+		["Highlight Regexp With String" my-highlight-regexp-with-string :help "(my-highlight-regexp-with-string &optional REGEXP STRING FACE)\n\nDisplay each match of REGEXP as STRING with face FACE.\nWith a prefix arg, remove all such highlights."]
+		["Remove String Highlights" my-remove-string-highlights :help "(my-remove-string-highlights)\n\nRemove all highlights created with `highlight-regexp-with-overlay'."]))
   (easy-menu-add-item global-map '("menu-bar" "extra-tools") item nil))
 
 (provide 'my-hi-lock)
