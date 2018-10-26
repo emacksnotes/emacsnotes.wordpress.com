@@ -18,22 +18,23 @@ With a prefix arg, remove all such highlights."
 	    (overlay-put ov 'display string)
 	    (overlay-put ov 'face face)))))))
 
-(defun my-remove-string-highlights ()
+(defun my-remove-all-string-highlights ()
   "Remove all highlights created with `highlight-regexp-with-overlay'."
   (interactive)
-  (my-highlight-regexp-with-string '(4)))
+  (remove-overlays nil nil 'my-overlay t))
 
-(define-key-after global-map
-  [menu-bar extra-tools]
-  (cons "Extra Tools"
-	(easy-menu-create-menu "Extra Tools" nil))
-  'tools)
+(unless (lookup-key global-map [menu-bar extra-tools])
+  (define-key-after global-map
+    [menu-bar extra-tools]
+    (cons "Extra Tools"
+	  (easy-menu-create-menu "Extra Tools" nil))
+    'tools))
 
 (global-set-key (kbd "C-x w o") 'my-highlight-regexp-with-string)
 
 (dolist (item '("--"
 		["Highlight Regexp With String" my-highlight-regexp-with-string :help "(my-highlight-regexp-with-string &optional REGEXP STRING FACE)\n\nDisplay each match of REGEXP as STRING with face FACE.\nWith a prefix arg, remove all such highlights."]
-		["Remove String Highlights" my-remove-string-highlights :help "(my-remove-string-highlights)\n\nRemove all highlights created with `highlight-regexp-with-overlay'."]))
+		["Remove All String Highlights" my-remove-all-string-highlights :help "(my-remove-all-string-highlights)\n\nRemove all highlights created with `highlight-regexp-with-overlay'."]))
   (easy-menu-add-item global-map '("menu-bar" "extra-tools") item nil))
 
 (provide 'my-hi-lock)
