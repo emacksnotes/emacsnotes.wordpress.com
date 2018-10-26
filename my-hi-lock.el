@@ -21,7 +21,7 @@ With a prefix arg, remove all such highlights."
 (defun my-remove-string-highlights ()
   "Remove all highlights created with `highlight-regexp-with-overlay'."
   (interactive)
-  (highlight-regexp-with-overlay '(4)))
+  (my-highlight-regexp-with-string '(4)))
 
 (define-key-after global-map
   [menu-bar extra-tools]
@@ -29,7 +29,7 @@ With a prefix arg, remove all such highlights."
 	(easy-menu-create-menu "Extra Tools" nil))
   'tools)
 
-(global-set-key (kbd "C-x w o") 'highlight-regexp-with-overlay)
+(global-set-key (kbd "C-x w o") 'my-highlight-regexp-with-string)
 
 (dolist (items '("--"
 		 ["Highlight Regexp With String" my-highlight-regexp-with-string :help "(my-highlight-regexp-with-string &optional REGEXP STRING FACE)\n\nDisplay each match of REGEXP as STRING with face FACE.\nWith a prefix arg, remove all such highlights."]
