@@ -4,13 +4,13 @@
 (require 'elmacro)
 
 (with-eval-after-load 'elmacro
-
-  (define-key-after global-map
-    [menu-bar extra-tools]
-    (cons "Extra Tools"
-	  (easy-menu-create-menu "Extra Tools" nil))
-    'tools)
-
+  (unless (lookup-key global-map [menu-bar extra-tools])
+    (define-key-after global-map
+      [menu-bar extra-tools]
+      (cons "Extra Tools"
+	    (easy-menu-create-menu "Extra Tools" nil))
+      'tools))
+  
   (easy-menu-define my-elmacro-menu nil "Menu for Elmacro."
     '("Elmacro"
       ["Elmacro Mode" (customize-save-variable 'elmacro-mode (not elmacro-mode)) :style toggle :selected elmacro-mode :help "(elmacro-mode &optional ARG)\n\nToggle emacs activity recording (elmacro mode).\nWith a prefix argument ARG, enable elmacro mode if ARG is\npositive, and disable it otherwise. If called from Lisp, enable\nthe mode if ARG is omitted or nil."]
