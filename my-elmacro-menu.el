@@ -1,3 +1,6 @@
+(ignore-errors
+  (require 'my-kmacro-menu))
+
 (require 'elmacro)
 
 (with-eval-after-load 'elmacro
