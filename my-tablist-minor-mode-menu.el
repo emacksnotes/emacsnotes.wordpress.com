@@ -1,3 +1,5 @@
+;; See https://emacsnotes.wordpress.com/2019/04/16/how-i-shortlist-add-ons-for-my-emacs-introducing-tablist/
+
 (add-hook 'tabulated-list-mode-hook 'tablist-minor-mode)
 
 (with-eval-after-load 'tablist
