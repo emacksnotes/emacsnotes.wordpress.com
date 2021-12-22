@@ -1,0 +1,69 @@
+#+options: tex:t
+#+odt_math_syntax: starmath
+
+#+odt_extra_styles: <style:style style:name="OrgInlineFormula"
+#+odt_extra_styles:              style:parent-style-name="Formula"
+#+odt_extra_styles:              style:family="graphic">
+#+odt_extra_styles:   <style:graphic-properties draw:wrap-influence-on-position="once-concurrent"
+#+odt_extra_styles:                             fo:margin-left="0cm"
+#+odt_extra_styles:                             fo:margin-right="0cm"
+#+odt_extra_styles:                             style:number-wrapped-paragraphs="no-limit"
+#+odt_extra_styles:                             style:vertical-pos="middle"
+#+odt_extra_styles:                             style:vertical-rel="text"
+#+odt_extra_styles:                             style:wrap="parallel"
+#+odt_extra_styles:                             style:wrap-contour="false"
+#+odt_extra_styles:                             svg:y="0cm" />
+#+odt_extra_styles: </style:style>
+
+#+begin_center
+*Finding Roots of a Quadratic Equation*
+#+end_center
+
+The process of /"completing the square"/ makes use of the algebraic
+identity
+
+    #+NAME: step0
+    $$x^2 + 2hx + h^2 = (x+h)^2$$
+
+which represents a well-defined algorithm that can be used to solve
+any quadratic equation.
+
+Starting with a quadratic equation in standard form, $ax^2 + bx + c = 0$
+
+1. Divide each side by $a$, the coefficient of the squared term.
+
+       #+NAME: step1
+       $$x^2+{ b over a }x+{ c over a } = 0$$
+
+2. Subtract the constant term $c slash a$ from both sides.
+
+       #+NAME: step2
+       $$x^2+{ b over a }x = -{ c over a }$$
+
+3. Add the square of one-half of $b slash a$, the coefficient of $x$, to both sides. This /"completes the square"/, converting the left side into a perfect square, as in [[step0]].
+
+       $$x^2 + 2({ b over { 2a } })x = -{ c over a }$$
+
+       #+NAME: step3
+       $$x^2 + 2({ b over { 2a } })x + ({ b over { 2a } })^2 = -{ c over a } + ({ b over { 2a } })^2$$
+
+4. Write the left side as a square and simplify the right side if necessary.
+
+       #+NAME: step4
+       \begin{equation}
+       matrix {
+         (x + b over { 2a })^2 # {} = {} # - { c over a } + { b^2 over { 4a^2 } }
+         ##
+         ~ #                     {} = {} # (-4ac + b^2) over { 4a^2 }
+       }
+       \end{equation}
+
+5. Produce two linear equations by equating the square root of the left side with the positive and negative square roots of the right side.
+
+       #+NAME: step5
+       $$matrix{ (x + b over { 2a }) # {} = {}# +- sqrt{ { -4ac + b^2 } over { 4a^2 } } ## {} # {} = {} # +- { sqrt{ -4ac + b^2 } over { 2a } } }$$
+
+6. Solve each of the two linear equations.
+
+       #+NAME: step6
+       $$matrix{ x # {} = {} # -b over { 2a } +- { sqrt{ -4ac + b^2 } over { 2a } } ## {} # {} = {} # { -b +- { sqrt{ -4ac + b^2 }  } } over { 2a } }$$
