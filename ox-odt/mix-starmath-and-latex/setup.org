@@ -1,0 +1,5 @@
+# Non-ODT exports like LaTeX and HTML will use TeX as math dialect and
+# will pick paragraphs in English.
+
+#+options: tex:t
+#+options: d:("LATEX" "ENGLISH")

@@ -1,0 +1,192 @@
+# ---------------- PURPOSE ----------------
+
+# This document illustrates how to mix human and math dialects
+# conditionally in a Org file.
+
+# ---------------- README ----------------
+
+# Ingest all the Emacs Lisp blocks before export.
+
+# In other words, with cursor inside the Emacs Lisps block do a
+# ~M-x org-babel-execute-src-block~ or a ~C-c C-c~
+
+# ---------------- CONFIGURE EXPORT ----------------
+
+# Common setup for all backends
+
+#+setupfile: setup.org
+
+#+begin_src emacs-lisp :exports results :results none
+(defun add-includes-for-current-backend ()
+  (let ((setupfile (format "setup-%s.org" org-export-current-backend)))
+    (when (file-readable-p setupfile)
+      (format "#+setupfile: %s" setupfile))))
+#+end_src
+
+# Include a setup file specific to each target format.
+#+MACRO: add-includes-for-current-backend (eval (add-includes-for-current-backend))
+
+# Each backend has it's own setup.  For example, when exporting to
+# ODT, include ~setup-odt.org~.  But when exporting to HTML or LaTeX
+# do nothing.
+
+{{{add-includes-for-current-backend}}}
+
+# ---------------- INFORMATIONAL ----------------
+
+#+MACRO: printbackend (eval (upcase (symbol-name org-export-current-backend)))
+
+# ---------------- CONDITIONAL INCLUSION OF SPAN OF TEXT ----------------
+
+#+begin_src emacs-lisp :exports results :results none
+(defun current-backend-is-one-of (backends)
+  (member (symbol-name org-export-current-backend) (split-string backends ":")))
+#+end_src
+
+# Include Starmath or LaTeX according as the target format is ODT or non-ODT.
+#+MACRO: starmath-or-latex-full (eval (if (current-backend-is-one-of "odt") $1 $2))
+
+# Same as ~starmath-or-latex-full~ but encloses them in `\(' and '\)'.
+#+MACRO: starmath-or-latex (eval (format "\\(%s\\)" (if (current-backend-is-one-of "odt") $1 $2)))
+
+# Functionally same as ~starmath-or-latex-full~, but for /human/ languages.
+#+MACRO: english-or-tamil (eval (if (current-backend-is-one-of "odt") $1 $2))
+
+# ---------------- TEXT CONTENT BEGINS HERE ----------------
+
+#+begin_center
+/(You are viewing this document in {{{printbackend}}} format)/
+#+end_center
+
+Hello {{{english-or-tamil(நண்பனே!, my friend!)}}}
+
+:ENGLISH:
+How are you?
+:END:
+
+:TAMIL:
+நீ எப்படி இருக்கிறாய்?
+:END:
+
+:ENGLISH:
+You asked me for some help with Euler's Identity. There is a very helpful article about this on
+Wikipedia.  Here is an extract from the Wikipedia page.
+:END:
+
+:TAMIL:
+Euler's Identity தொடர்பாக என்னிடம் உதவி கேட்டாய். விக்கிபீடியாவில் இதைப் பற்றி மிகவும் பயனுள்ள கட்டுரை
+Hope this helpsஉள்ளது. விக்கிபீடியா கட்டுரைலிருந்து எடுக்கப்பட்ட ஒரு பகுதியை இங்கே இணைத்துள்ளேன்.
+:END:
+
+:ENGLISH:
+Hope this helps.
+:END:
+
+:TAMIL:
+இது உனக்கு உதவும் என நம்புகிறேன்.
+:END:
+
+:ENGLISH:
+Kind regards,
+:END:
+
+:TAMIL:
+அன்புடன்,
+:END:
+
+/Emacksnotes/
+
+----------------
+
+#+begin_center
+_*On Euler's Identity*_
+#+end_center
+
+# STRATEGY 1: Replicate the paragraphs while replacing the text spans.  You can see an example in
+# the following paragraph.
+#
+# Enable preview with ~M-x org-latex-preview~ (or ~C-c C-x C-l~).
+# Starmath has no preview.  So, it is "broken".
+
+:STARMATH:
+Euler's identity asserts that ${func e}^{i %pi}$  is equal to −1.
+:END:
+
+:LATEX:
+Euler's identity asserts that $\mathrm{e}^{i\pi }$ is equal to −1.
+:END:
+
+# STRATEGY 2: Retain the paragraph, but conditionally pick the text spans using a macro.  You can
+# see an example in the following paragraph.
+
+The expression {{{starmath-or-latex({func e}^{i %pi},\mathrm{e}^{i\pi})}}} is a special case of the
+expression {{{starmath-or-latex({func e}^{z},\mathrm{e}^{z})}}}, where $z$ is any complex number.
+
+# The problem with STRATEGY 2 is that Org mode doesn't recognize latex fragments within a macro.
+# You can see what I mean if you do ~M-x org-latex-preview~ (or ~C-c C-x C-l~)
+
+In general {{{starmath-or-latex-full(\({func e}^{z}\),\(\mathrm{e}^{z}\))}}} is defined for complex $z$ by
+extending one of the definitions of the exponential function from real exponents to complex
+exponents. One such definition is:
+
+# LaTeX Equations that are NOT inlined doesn't pose a problem when it comes to previewing.
+# There is no preview for Starmath fragments.
+
+:STARMATH:
+$${func e}^{z} =  lim from{n -> infinity} ({  1 + z over n })^{ n }$$
+:END:
+
+:LATEX:
+$$\mathrm{e}^{z}=\lim _{n\rightarrow \infty }\left(1+\frac{z}{n}\right)^{n}$$
+:END:
+
+Euler's identity therefore states that the limit, as n approaches infinity, of
+{{{starmath-or-latex(({ 1 + {i %pi} wideslash n })^{ n},\left(1+\frac{i\pi }{n}\right)^{n})}}} is
+equal to −1.
+
+Euler's identity is a special case of Euler's formula, which states that for any real number x,
+
+# I wish there was a way to selectively fold only some named drawers, much like there is a way to
+# selectively export only some named drawers.  If such an option were available, I would happily
+# fold away the STARTMATH drawers and hide the visual clutter like so:
+
+:STARMATH:
+$${func e}^{i x} `=` cos( x ) ` + ` i ` sin( x )$$
+:END:
+
+:LATEX:
+$$\mathrm{e}^{ix}\ =\ \cos (x)\ +\ i\ \sin (x)$$
+:END:
+
+where the inputs of the trigonometric functions sine and cosine are given in radians.
+
+In particular, when {{{starmath-or-latex(x = π,x=\pi )}}},
+
+:STARMATH:
+$${func e}^{i %pi} `=` cos %pi  ` + ` i ` sin %pi $$
+:END:
+
+:LATEX:
+$$\mathrm{e}^{i\pi }\ =\ \cos \pi \ +\ i\ \sin \pi $$
+:END:
+
+Since {{{starmath-or-latex(cos %pi `=` -1,\cos \pi =-1)}}} and {{{starmath-or-latex(sin %pi `=` 0,\sin \pi =0)}}}
+it follows that
+
+:STARMATH:
+$${func e}^{i %pi} = -1$$
+:END:
+
+:LATEX:
+$$\mathrm{e}^{i\pi }=-1$$
+:END:
+
+which yields Euler's identity
+
+:STARMATH:
+$${func e}^{i %pi} + 1 = 0$$
+:END:
+
+:LATEX:
+$$\mathrm{e}^{i\pi }+1=0$$
+:END:

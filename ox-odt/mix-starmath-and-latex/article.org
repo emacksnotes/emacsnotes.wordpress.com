@@ -1,0 +1,432 @@
+#+options: ':nil *:t -:t ::t <:t H:4 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:nil todo:t |:t
+#+title: article
+#+date: <2021-12-25 Sat>
+#+author: emacksnotes
+#+email: emacksnotes@debian
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+
+#+creator: Emacs 29.0.50 (Org mode 9.5.1)
+#+cite_export:
+
+* Objective:
+
+#+begin_center
+/*Mix ~Starmath~ and ~LaTeX~ in same ~Org~ file*/\\
+/(or)/\\
+/*Mix ~English~ and ~Tamil~ in same ~Org~ file*/\\
+/(or)/\\
+/*How to conditionally export text using Macros and Drawers in ~Org mode~*/
+#+end_center
+
+In a previous article^([[https://emacsnotes.wordpress.com/2021/12/22/use-starmath-not-latex-not-mathml-when-exporting-org-mode-files-to-libreoffice/][1]]), I insisted that one should use ~Starmath~ (and not ~LaTeX~) as the Math dialect when exporting to ~OpenDocument~ / ~LibreOffice~ / ~Microsoft Word~ format.
+
+That article concluded with the following sentiment:
+
+#+begin_quote
+"There is no way you can mix ~Starmath~ /*and*/ ~LaTeX~ together in same ~Org~ file.  You need to choose one /*or*/ the other, not both."
+#+end_quote
+
+In this article, I outline how you can mix ~Starmath~ and ~LaTeX~ dialects in the /same/ ~Org mode~ file, and still produce looking Math documents /irrespective/ of the final format.
+
+You will accomplish this by a sleight of hand where by
+
+- the ~OpenDocument~ exporter will "pick" the ~Starmath~ fragments while ignoring the ~LaTeX~ fragments
+- the ~HTML~ and ~LaTeX~ exporters will "pick" the ~LaTeX~ fragments
+  while ignoring the ~Starmath~ fragments
+
+To achieve this, you will use the following ~Org~ facilities
+
+- (conditional) Macros^([[https://www.gnu.org/software/emacs/manual/html_node/org/Macro-Replacement.html][1]])
+
+- Drawers^([[https://www.gnu.org/software/emacs/manual/html_node/org/Export-Settings.html][1]], [[https://www.gnu.org/software/emacs/manual/html_node/org/Drawers.html][2]])
+
+* What the end result looks like
+
+Down below you see the /same/ ~Org mode~ file which is exported to three different formats---~LaTeX/PDF~, ~HTML~, and ~LibreOffice~.
+
+Pay attention to the Math, both the /inline math/ and /display math/.
+
+Doesn't the math look "good" in all these formats?
+
+Note that
+
+- Math in ~LaTeX~ and ~HTML~ export uses the ~LaTeX~, the dialect of Math that is native to ~Org~
+
+-  Math in ~OpenDocument~ export uses ~Starmath~, a dialect that is /not/ native to ~Org~ but to ~LibreOffice~.
+
+** How the ~Org~ buffer looks like in Emacs
+
+[[./Picture/euler.org.png]]
+
+** How the document looks when exported to ~LaTeX~/~PDF~^([[https://github.com/emacksnotes/emacsnotes.wordpress.com/raw/master/ox-odt/mix-starmath-and-latex/euler.pdf][1]])
+
+[[./Picture/euler.tex.pdf.png]]
+
+** How the document looks when exported to ~HTML~^([[https://github.com/emacksnotes/emacsnotes.wordpress.com/raw/master/ox-odt/mix-starmath-and-latex/euler.html][1]])
+
+[[./Picture/euler.html.png]]
+
+** How the document looks when exported to ~Starmath~^([[https://github.com/emacksnotes/emacsnotes.wordpress.com/raw/master/ox-odt/mix-starmath-and-latex/euler.odt][1]])
+
+[[./Picture/euler.odt.png]]
+
+* Ok.  I am convinced!  But how do I do it?
+
+See [[#ec3e571e-9b59-4667-ab46-fe5454fc2bfe][~euler.org~: The ~Org~ source for this article]]
+
+* Your ~Org~ source doesn't make sense. Could you please tell me what is going on in there?
+
+Ok.
+
+Before proceeding ahead, remember that Math equations can be of two types:
+
+1. /inline math/
+2. /display math/
+
+This article outlines strategies for including each equation type--- /inline/ and /math/ ---in each of the dialects--- ~Starmath~ and ~LaTeX~ ---of interest.
+
+** The ~#+SETUPFILE:~ says /"Each export format specifies what DRAWER it wants, and each DRAWER uses it's own Math dialect"/
+
+[[./Picture/setup.png]]
+
+** What to do with  /Display-ed Equations/
+:PROPERTIES:
+:CUSTOM_ID:       94370bbc-d8d7-416e-bfe1-1a7efdd115a3
+:END:
+
+*** Put each dialect of the /display-ed equation/ in a DRAWER of it's own.
+
+[[./Picture/displaymath.png]]
+
+
+*** Fold away the ~STARMATH~ drawer, for ease of editing
+:PROPERTIES:
+:CUSTOM_ID:       8d0ca035-f295-442b-b5e1-ae0204d51698
+:END:
+
+#+NAME: displaymath-fold
+[[./Picture/displaymath-fold.png]]
+
+
+** What to do with /Inline-d Equations/
+
+Handling of an /inline equation/ is a bit involved compared to a /display equation/.  This is because you want to "squeeze in" the different dialects within the "shared" prose that surrounds the equation.
+
+There are two ways to handle /inlined-equation/:
+
+- ~STRATEGY 1~:  Replicate the paragraph of interest in to different DRAWERS, with each DRAWER holding a different dialect
+- ~STRATEGY 2~:  Don't duplicate the paragraph text.  Instead, include the dialects in a /conditional/ ~Org macro~
+
+*** ~STRATEGY 1~:  /Replicate the math paragraph in to different DRAWERS, with each DRAWER holding a different dialect/
+:PROPERTIES:
+:CUSTOM_ID:       19699261-826b-4249-af4d-7c484ba725a2
+:END:
+
+[[./Picture/inlinemath-strategy1.png]]
+
+You have seen ~STRATEGY 1~ in action the previous section titled [[#94370bbc-d8d7-416e-bfe1-1a7efdd115a3][What to do with /Display-ed Equations/]].  All you need to realise is that a /display-ed equation/ is nothing but an /inline-ed equation/ that contains (a sole) equation and no surrounding "prose".
+
+*** ~STRATEGY 2~:  Don't duplicate paragraph text.  Instead, include the dialects in a /conditional/ ~Org macro~
+:PROPERTIES:
+:CUSTOM_ID:       dd4fe390-6be3-4103-b391-23257001a375
+:END:
+
+#+NAME: inlinemath-strategy2
+[[./Picture/inlinemath-strategy2.png]]
+
+*** Comparing ~STRATEGY 1~ and ~STRATEGY 2~
+
+The Math markup, be it in ~Starmath~ or ~LaTeX~, looks like line-noise.  What makes Math markup bearable, is the preview feature of ~LaTeX~ fragments^([[https://www.gnu.org/software/emacs/manual/html_node/org/Previewing-LaTeX-fragments.html][1]]).  No one would use ~Org~ for Math, if it didn't allow inline preview of Math fragments.  So it makes sense to compare ~STRATEGY 1~ and ~STRATEGY 2~ based on how they fair with respect to previewing.
+
+Remember, the ~Starmath~ dialect is not the native format for Math in ~Org~ markup.  This means that inline preview of ~Starmath~ is for all practical puposes useless.
+
+- When using STRATEGY 1, you can fold the STARMATH drawers away, and keep only the LATEX drawers visible.^([[displaymath-fold][1]])
+
+  There is another problem with this ~STRATEGY 1~: /You are duplicating a paragraph/.  So, if you choose to rewrite a paragraph in one DRAWER then you need to carry over the change the other DRAWER(s).
+
+- When using STRATEGY 2, you mix the ~Starmath~ and ~LaTeX~ dialects together in an ~Org macro~.  Since math preview doesn't work for any Math fragment---be it ~Starmath~ or ~LaTeX~---when embedded within a ~Org macro~, there is not only visual clutter but also no feedback on what the math looks like^([[inlinemath-strategy2][1]]).  This makes ~STRATEGY 2~ cumbersome.
+
+  There is an advantage with ~STRATEGY 2~ though: /You aren't duplicating any content/.
+
+Both ~STRATEGY 1~ and ~STRATEGY 2~ has it's problems.  There are two ways to overcome these problems:
+
+- Better planning :: At first, type your article solely in ~LaTeX~, and only when you are thoroughly convinced that there aren't any more changes, do you proceed to incorporate the ~Starmath~ dialect in to the article.  In a sense, you are reserving the use of ~Starmath~ dialect as the ultimate step in document production.
+
+- Improved tooling :: This would involve
+
+  1. Add support for previewing ~LaTeX~ fragment in a ~Org macro~
+
+  2. Control STARTUP visibility^([[https://www.gnu.org/software/emacs/manual/html_node/org/In_002dbuffer-Settings.html#index-STARTUP_002c-keyword-2][1]]) so that /some/ DRAWERs remain always folded, while some other DRAWERs remain unfolded.  In our case, the ~STARMATH~ drawer would remain invisible and the ~LaTeX~ drawer would remain visible.
+
+  3. Convince ~Org~ developers about the need for different dialects for Math
+
+  4. Enhance ~Org~ markup so that one can say what dialect a Math fragment is in.  Right now, math fragments can be in one and only one format: ~LaTeX~.
+
+  5. Tell ~Org~ what your preferred dialect for Math is when editing the ~Org~ source in an ~Emacs~ buffer. This is much the same as how one specifies the size of the inline images within an ~Org~ buffer.
+
+  6. Add support for previewing ~Starmath~ fragments.  Note that (a) the /enhanced ODT exporter/^([[https://github.com/kjambunathan/org-mode-ox-odt][1]])/ already supports export of ~Starmath~ to a ~OpenDocument formula~ file, and subsequently to ~PDF~. and (b) the ~LaTeX~ exporter or the ~Docview~ module already has support for converting ~PDF~ files to various image formats.
+
+  7. Use ~Starmath~ as the primary dialect for Math, and use a /Starmath-to-TeX/ and /Starmath-to-MathML/ converter for exporting to ~LaTex~ and ~HTML~.  This is much similar to how the ~LaTeX~ fragments are converted to ~MathML~ using some /LaTeX-to-MathML/ converter as part of export processing.
+
+  In my opinion,
+
+  - Items 1 and 2 could be taken as bug in core ~Org~
+
+  - Items 3, 4 and 5 are unlikely to even take off.
+
+    The ~Org~ developers are convinced that the markup is mature, and routinely resist any modification to the existing syntax.  So, it will take extraordinary effort to convince ~Org~ developers of the dire need for another Math dialect.
+
+    ~Org~ and ~Emacs~ in general is a ~LaTeX~ shop, and the core developers have little interest in catering to other formats.
+
+  - Items 6 and 7 can be taken up as bug requests with /the enhanced OpenDocument exporter/.
+
+* Before I conclude, a word about producing multi-lingual documents
+
+Note that the suggestions here go beyond including ~Math~ dialects.
+
+For example, you can use the methods outlined here to produce documents with different "human" languages from the same ~Org~ file.
+
+[[./Picture/multiligual.png]]
+
+* Conclusion
+
+In the preceding article^([[https://emacsnotes.wordpress.com/2021/12/22/use-starmath-not-latex-not-mathml-when-exporting-org-mode-files-to-libreoffice/][1]]), I argued that ~Starmath~ alone is the most sensible option when exporting to ~OpenDocument~ / ~LibreOffice~ / ~Microsoft Word~ formats.
+
+In this article, (a) I have gone further and established that one can mix both ~Starmath~ and ~LaTeX~ as Math dialects in the /same/ ~Org~ file (b) I have illustrated how to produce /multilingual/ documents from the /same/ ~Org~ file.
+
+I have relied on following resources for producing this article:
+
+- /conditional inclusion of "a span of text" using ~Org macros~/ :: [[https://github.com/fniessen/org-macros][Org Macros]]
+
+- /conditional inclusion of "blocks of text" using DRAWERs/ :: [[https://lists.gnu.org/archive/html/emacs-orgmode/2013-07/msg00284.html][Discussion in ~emacs-orgmode~ mailing list dtd. Jul 2013]]
+
+- /efficacy of "serial replication" of content for the purpose of translation/ :: [[https://elpa.gnu.org/packages/org-translate.html][org-translate | GNU ELPA]]
+
+  In this context, some observations are in order ...
+
+  The README to ~org-translate~ gives this example:
+  
+      #+begin_src org
+	,* Le Rouge et le Noir                                             :source:
+
+	  La petite ville de Verrières peut passer pour...
+
+	,* The Red and the Black                                           :translation:
+
+	  The small town of Verrieres may be regarded...
+      #+end_src
+
+  The package is written by a /professional/ translator, and understandably the different languages are in a subtrees of their own.  In the context of mixing different math dialects, we don't use distinctly-tagged subtrees, but distinct DRAWERs.
+
+I hope that this and the preceding article help existing ~Org~ mode users who have a need for "multiplexing" different contents in the ~Org~ export pipeline.  Here are some instances of such past requests:
+
+- /a need for different Math dialects in different output formats/ :: [[https://lists.gnu.org/archive/html/emacs-orgmode/2018-06/msg00189.html][Discussion in ~emacs-orgmode~ mailing list dtd. Jun 2018]]
+- /producing ENGLISH and SPANISH content from same ~Org~ file/ ::  [[https://lists.gnu.org/archive/html/emacs-orgmode/2013-07/msg00277.html][Discussion in ~emacs-orgmode~ mailing list dtd. Jul 2013]]
+
+* ~euler.org~: The ~Org~ source for this article
+:PROPERTIES:
+:CUSTOM_ID:       ec3e571e-9b59-4667-ab46-fe5454fc2bfe
+:END:
+
+This is how the ~Org~ file^([[https://raw.githubusercontent.com/emacksnotes/emacsnotes.wordpress.com/master/ox-odt/mix-starmath-and-latex/euler.org][1]]) looks like
+
+#+begin_src org
+  # ---------------- PURPOSE ----------------
+
+  # This document illustrates how to mix human and math dialects
+  # conditionally in a Org file.
+
+  # ---------------- README ----------------
+
+  # Ingest all the Emacs Lisp blocks before export.
+
+  # In other words, with cursor inside the Emacs Lisps block do a
+  # ~M-x org-babel-execute-src-block~ or a ~C-c C-c~
+
+  # ---------------- CONFIGURE EXPORT ----------------
+
+  # Common setup for all backends
+
+  ,#+setupfile: setup.org
+
+  ,#+begin_src emacs-lisp :exports results :results none
+  (defun add-includes-for-current-backend ()
+    (let ((setupfile (format "setup-%s.org" org-export-current-backend)))
+      (when (file-readable-p setupfile)
+	(format "#+setupfile: %s" setupfile))))
+  ,#+end_src
+
+  # Include a setup file specific to each target format.
+  ,#+MACRO: add-includes-for-current-backend (eval (add-includes-for-current-backend))
+
+  # Each backend has it's own setup.  For example, when exporting to
+  # ODT, include ~setup-odt.org~.  But when exporting to HTML or LaTeX
+  # do nothing.
+
+  {{{add-includes-for-current-backend}}}
+
+  # ---------------- INFORMATIONAL ----------------
+
+  ,#+MACRO: printbackend (eval (upcase (symbol-name org-export-current-backend)))
+
+  # ---------------- CONDITIONAL INCLUSION OF SPAN OF TEXT ----------------
+
+  ,#+begin_src emacs-lisp :exports results :results none
+  (defun current-backend-is-one-of (backends)
+    (member (symbol-name org-export-current-backend) (split-string backends ":")))
+  ,#+end_src
+
+  # Include Starmath or LaTeX according as the target format is ODT or non-ODT.
+  ,#+MACRO: starmath-or-latex-full (eval (if (current-backend-is-one-of "odt") $1 $2))
+
+  # Same as ~starmath-or-latex-full~ but encloses them in `\(' and '\)'.
+  ,#+MACRO: starmath-or-latex (eval (format "\\(%s\\)" (if (current-backend-is-one-of "odt") $1 $2)))
+
+  # Functionally same as ~starmath-or-latex-full~, but for /human/ languages.
+  ,#+MACRO: english-or-tamil (eval (if (current-backend-is-one-of "odt") $1 $2))
+
+  # ---------------- TEXT CONTENT BEGINS HERE ----------------
+
+  ,#+begin_center
+  /(You are viewing this document in {{{printbackend}}} format)/
+  ,#+end_center
+
+  Hello {{{english-or-tamil(நண்பனே!, my friend!)}}}
+
+  :ENGLISH:
+  How are you?
+  :END:
+
+  :TAMIL:
+  நீ எப்படி இருக்கிறாய்?
+  :END:
+
+  :ENGLISH:
+  You asked me for some help with Euler's Identity. There is a very helpful article about this on
+  Wikipedia.  Here is an extract from the Wikipedia page.
+  :END:
+
+  :TAMIL:
+  Euler's Identity தொடர்பாக என்னிடம் உதவி கேட்டாய். விக்கிபீடியாவில் இதைப் பற்றி மிகவும் பயனுள்ள கட்டுரை
+  Hope this helpsஉள்ளது. விக்கிபீடியா கட்டுரைலிருந்து எடுக்கப்பட்ட ஒரு பகுதியை இங்கே இணைத்துள்ளேன்.
+  :END:
+
+  :ENGLISH:
+  Hope this helps.
+  :END:
+
+  :TAMIL:
+  இது உனக்கு உதவும் என நம்புகிறேன்.
+  :END:
+
+  :ENGLISH:
+  Kind regards,
+  :END:
+
+  :TAMIL:
+  அன்புடன்,
+  :END:
+
+  /Emacksnotes/
+
+  ----------------
+
+  ,#+begin_center
+  _*On Euler's Identity*_
+  ,#+end_center
+
+  # STRATEGY 1: Replicate the paragraphs while replacing the text spans.  You can see an example in
+  # the following paragraph.
+  #
+  # Enable preview with ~M-x org-latex-preview~ (or ~C-c C-x C-l~).
+  # Starmath has no preview.  So, it is "broken".
+
+  :STARMATH:
+  Euler's identity asserts that ${func e}^{i %pi}$  is equal to −1.
+  :END:
+
+  :LATEX:
+  Euler's identity asserts that $\mathrm{e}^{i\pi }$ is equal to −1.
+  :END:
+
+  # STRATEGY 2: Retain the paragraph, but conditionally pick the text spans using a macro.  You can
+  # see an example in the following paragraph.
+
+  The expression {{{starmath-or-latex({func e}^{i %pi},\mathrm{e}^{i\pi})}}} is a special case of the
+  expression {{{starmath-or-latex({func e}^{z},\mathrm{e}^{z})}}}, where $z$ is any complex number.
+
+  # The problem with STRATEGY 2 is that Org mode doesn't recognize latex fragments within a macro.
+  # You can see what I mean if you do ~M-x org-latex-preview~ (or ~C-c C-x C-l~)
+
+  In general {{{starmath-or-latex-full(\({func e}^{z}\),\(\mathrm{e}^{z}\))}}} is defined for complex $z$ by
+  extending one of the definitions of the exponential function from real exponents to complex
+  exponents. One such definition is:
+
+  # LaTeX Equations that are NOT inlined doesn't pose a problem when it comes to previewing.
+  # There is no preview for Starmath fragments.
+
+  :STARMATH:
+  $${func e}^{z} =  lim from{n -> infinity} ({  1 + z over n })^{ n }$$
+  :END:
+
+  :LATEX:
+  $$\mathrm{e}^{z}=\lim _{n\rightarrow \infty }\left(1+\frac{z}{n}\right)^{n}$$
+  :END:
+
+  Euler's identity therefore states that the limit, as n approaches infinity, of
+  {{{starmath-or-latex(({ 1 + {i %pi} wideslash n })^{ n},\left(1+\frac{i\pi }{n}\right)^{n})}}} is
+  equal to −1.
+
+  Euler's identity is a special case of Euler's formula, which states that for any real number x,
+
+  # I wish there was a way to selectively fold only some named drawers, much like there is a way to
+  # selectively export only some named drawers.  If such an option were available, I would happily
+  # fold away the STARTMATH drawers and hide the visual clutter like so:
+
+  :STARMATH:
+  $${func e}^{i x} `=` cos( x ) ` + ` i ` sin( x )$$
+  :END:
+
+  :LATEX:
+  $$\mathrm{e}^{ix}\ =\ \cos (x)\ +\ i\ \sin (x)$$
+  :END:
+
+  where the inputs of the trigonometric functions sine and cosine are given in radians.
+
+  In particular, when {{{starmath-or-latex(x = π,x=\pi )}}},
+
+  :STARMATH:
+  $${func e}^{i %pi} `=` cos %pi  ` + ` i ` sin %pi $$
+  :END:
+
+  :LATEX:
+  $$\mathrm{e}^{i\pi }\ =\ \cos \pi \ +\ i\ \sin \pi $$
+  :END:
+
+  Since {{{starmath-or-latex(cos %pi `=` -1,\cos \pi =-1)}}} and {{{starmath-or-latex(sin %pi `=` 0,\sin \pi =0)}}}
+  it follows that
+
+  :STARMATH:
+  $${func e}^{i %pi} = -1$$
+  :END:
+
+  :LATEX:
+  $$\mathrm{e}^{i\pi }=-1$$
+  :END:
+
+  which yields Euler's identity
+
+  :STARMATH:
+  $${func e}^{i %pi} + 1 = 0$$
+  :END:
+
+  :LATEX:
+  $$\mathrm{e}^{i\pi }+1=0$$
+  :END:
+#+end_src

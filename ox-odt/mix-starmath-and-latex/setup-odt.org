@@ -1,0 +1,22 @@
+# ODT export will use Starmath as math dialect and will pick
+# paragraphs in Tamil.
+
+#+odt_math_syntax: starmath
+#+options: d:("STARMATH" "TAMIL")
+
+# The following XML style definition is to work around a bug in
+# ~ox-odt.el~.
+
+#+odt_extra_styles: <style:style style:name="OrgInlineFormula"
+#+odt_extra_styles:              style:parent-style-name="Formula"
+#+odt_extra_styles:              style:family="graphic">
+#+odt_extra_styles:   <style:graphic-properties draw:wrap-influence-on-position="once-concurrent"
+#+odt_extra_styles:                             fo:margin-left="0cm"
+#+odt_extra_styles:                             fo:margin-right="0cm"
+#+odt_extra_styles:                             style:number-wrapped-paragraphs="no-limit"
+#+odt_extra_styles:                             style:vertical-pos="middle"
+#+odt_extra_styles:                             style:vertical-rel="text"
+#+odt_extra_styles:                             style:wrap="parallel"
+#+odt_extra_styles:                             style:wrap-contour="false"
+#+odt_extra_styles:                             svg:y="0cm" />
+#+odt_extra_styles: </style:style>
