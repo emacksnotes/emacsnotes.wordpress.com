@@ -1,0 +1,97 @@
+#+options: toc:nil num:nil
+#+title: Roots of a Quadratic Equation
+#+subtitle: /Typeset using =AsciiMath= and =MathJax=/
+
+#+options: tex:asciimath
+
+#+html_head_extra: <script type="text/x-mathjax-config">
+
+#+html_head_extra: MathJax.Hub.Config({
+#+html_head_extra:   asciimath2jax: {
+#+html_head_extra:     delimiters: [
+#+html_head_extra:       ["\\(", "\\)"],
+#+html_head_extra:       ["$$", "$$"],
+#+html_head_extra:       ["\\[", "\\]"],
+#+html_head_extra:       ["\\begin{*}", "\\end{*}"],
+#+html_head_extra:       ["\\begin{displaymath}", "\\end{displaymath}"],
+#+html_head_extra:       ["\\begin{asciimath}", "\\end{asciimath}"],
+#+html_head_extra:       ["\\begin{equation}", "\\end{equation}"],
+#+html_head_extra:     ],
+#+html_head_extra:   },
+#+html_head_extra: });
+#+html_head_extra: </script>
+
+#+html_head_extra: <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=AM_CHTML"></script>
+
+*Roots of a Quadratic Equation*
+
+The two roots of the quadaratic equation \(ax^2+bx+c=0\) are $$(-b+sqrt(b^2-4ac))/(2a)$$ and $$(-b-sqrt(b^2-4ac))/(2a)$$.
+
+*Finding Roots of a Quadratic Equation*
+
+The process of /"completing the square"/ makes use of the algebraic identity
+
+    #+name: asquare
+    #+caption: A Polynomial Identity
+    \begin{equation}
+    x^2 + 2hx + h^2 = (x+h)^2
+    \end{equation}
+
+which represents a well-defined algorithm that can be used to solve any quadratic equation.
+
+Starting with a quadratic equation in standard form,
+
+   #+name: quadratic
+   #+caption: A Quadratic Equation
+   \begin{*}
+   ax^2 + bx + c = 0
+   \end{*}
+
+1. Divide each side by $$a$$, the coefficient of the squared term.
+
+       #+NAME: step1
+       \[
+       x^2+( b / a )x+( c / a ) = 0
+       \]
+
+2. Subtract the constant term $$c / a$$ from both sides.
+
+       #+NAME: step2
+       $$x^2+( b / a )x = -( c / a )$$
+
+3. Add the square of one-half of $$b / a$$, the coefficient of $$x$$, to both sides. This /"completes the square"/, converting the left side into a perfect square, as in [[asquare]].
+
+       $$x^2 + 2( b / ( 2a ) )x = -( c / a )$$
+
+       #+NAME: step3
+       $$x^2 + 2( b / ( 2a ) )x + ( b / ( 2a ) )^2 = -( c / a ) + ( b / ( 2a ) )^2$$
+
+4. Write the left side as a square and simplify the right side if necessary.
+
+   #+NAME: step4
+   \[
+       {:
+           ((x + b / ( 2a ))^2  , = ,  - ( c / a ) + ( b^2 / ( 4a^2 ))),
+           (                    , = ,  (-4ac + b^2) / ( 4a^2 )        )
+       :}
+   \]
+
+5. Produce two linear equations by equating the square root of the left side with the positive and negative square roots of the right side.
+
+   #+NAME: step5
+   \[
+       {:
+           ( (x + b / ( 2a )) , = , +- sqrt( ( -4ac + b^2 ) / ( 4a^2 ) )),
+           (                  , = ,  +- ( sqrt( -4ac + b^2 ) / ( 2a ) ) )
+       :}
+   \]
+
+6. Solve each of the two linear equations.
+
+    #+NAME: step6
+    \[
+        {:
+            ( x , = ,  -b / ( 2a ) +- ( sqrt( -4ac + b^2 ) / ( 2a ) )),
+            (   , = ,  ( -b +- ( sqrt( -4ac + b^2 )  ) ) / ( 2a )    )
+        :}
+    \]

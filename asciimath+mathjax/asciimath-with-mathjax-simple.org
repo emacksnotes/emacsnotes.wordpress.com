@@ -1,0 +1,54 @@
+#+options: toc:nil num:nil
+#+options: tex:asciimath
+
+#+html_head_extra: <script type="text/x-mathjax-config">
+
+#+html_head_extra: MathJax.Hub.Config({
+#+html_head_extra:   asciimath2jax: {
+#+html_head_extra:     delimiters: [
+#+html_head_extra:       ["\\(", "\\)"],
+#+html_head_extra:       ["$$", "$$"],
+#+html_head_extra:       ["\\[", "\\]"],
+#+html_head_extra:       ["\\begin{*}", "\\end{*}"],
+#+html_head_extra:       ["\\begin{displaymath}", "\\end{displaymath}"],
+#+html_head_extra:       ["\\begin{asciimath}", "\\end{asciimath}"],
+#+html_head_extra:       ["\\begin{equation}", "\\end{equation}"],
+#+html_head_extra:     ],
+#+html_head_extra:   },
+#+html_head_extra: });
+#+html_head_extra: </script>
+
+#+html_head_extra: <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=AM_CHTML"></script>
+
+#+title: What is =AsciiMath=?\\
+#+title: Why use =AsciiMath=--not =TeX=--for typesetting Math equations
+#+subtitle: (This document is typeset with using =AsciiMath= and =MathJax=)
+
+* Why =AsciiMath=?
+
+=AsciiMath= is a markup language for typesetting Math.
+
+A math equation written in =AsciiMath= is easy on eyes and fingers
+when compared to =LaTeX=.
+
+For example, let us consider the problem of typesetting the equation
+
+\[
+sum_(i=1)^n i^3=((n(n+1))/2)^2
+\]
+
+If you use =AsciiMath=, you write
+
+: sum_(i=1)^n i^3=((n(n+1))/2)^2
+
+If you use =LaTeX=, you write
+
+: \sum_{i=1}^{n} i^3=\left(\frac{n(n+1)}{2}\right)^2
+
+Which of the above two versions is easy to understand and type? It is
+obviously the =AsciiMath= version.
+
+It is no wonder that, I prefer =AsciiMath= to =LaTeX= for typesetting
+Math equations.  You should too.
+
+
