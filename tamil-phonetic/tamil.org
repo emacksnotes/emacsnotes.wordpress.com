@@ -1,0 +1,283 @@
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:{} arch:headline
+#+options: author:t broken-links:mark c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:nil todo:t |:t
+#+title: Tamil Phonetic Input Method in Emacs
+#+subtitle: Emacs-இல் தமிழ் ஃபொனெடிக் முறையில் type செய்வது எப்படி?
+#+date: <2022-03-06 Sun>
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+#+creator: Emacs 29.0.50 (Org mode 9.5.2)
+#+cite_export:
+
+* Emacs' =tamil-itrans= is no good, and Gnome's =Tamil (phonetic (m17n))= stutters when used with Emacs! What should a Tamil-user do?
+
+Tamil is my mother tongue.
+
+In the past, there have been occasions where I had to compose lengthy text in Tamil.  On those occasions, either I used to go with Emacs' =tamil-itrans= input method, or Gnome's =Tamil (phonetic (m17n))= input method.
+
+Each of these methods has its own set of problems.
+
+- Emacs' very own =tamil-itrans= method feels very contrived.
+
+  Many of the mappings from English-letters to Tamil-letters are not at all intuitive.
+
+  What this means is that I spend more time correcting text with =BACKSPACE= s, or looking up completions with =TAB=, or consulting the input mapping table with =C-h C-\= (=M-x describe-input-method=), rather than composing the article.
+
+- When I use the Gnome Input Method , there is a noticeable lag between the typing of keys in Emacs and the appearance of the corresponding Tamil letter in the Emacs buffer.
+
+  This lag is so large that it is simply impossible to get immediate feedback on the Tamil letter you have typed.
+
+* The answer to earlier question is .... /"Use =tamil-phonetic= input method!"/
+
+Given my above troubles , I was pleasantly surprised to discover that there is =tamil-phonetic= input method available for Emacs^{([[https://github.com/rnchzn/tamil-phonetic][1]])}.  The package =tamil-phonetic= is authored by a native Tamil speaker, and caters admirably to needs of users who want to type Tamil text in Emacs.
+
+The highlights of the package are:
+
+1. the default mapping table mimics Gnome's =Tamil (phonetic (m17n))= method
+
+2. you can customize the mapping table
+
+(1) above means that you get better defaults than =tamil-itrans= and you can start from what you already know.
+
+(2) above means that you can tweak the mapping table to your liking, and you don't have to ever exert yourself in recollecting the right set of keys.
+
+In this article, I am documenting how I use the package.
+
+If you had composed Tamil text in the past using Emacs, and were as frustrated as I was, then read on ...
+
+* How to set up =Tamil Phonetic= input method in Emacs
+
+** Step 1: Install =Emacs Lisp= libraries that =tamil-phonetic= depends on
+
+=tamil-phonetic= depends on =s= yyyy^{([[https://github.com/magnars/s.el][1]])} and =dash= yyyy^{([[https://github.com/magnars/dash.el][1]])}
+
+=dash= is available from GNU ELPA.  =s= is available on MELPA.
+
+Configure your Emacs to have the right set of ELPAs:
+
+#+begin_src emacs-lisp
+(custom-set-variables
+ '(package-archives
+   '(("gnu" . "https://elpa.gnu.org/packages/")
+     ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+     ("melpa" . "https://melpa.org/packages/"))))
+#+end_src
+
+and do =M-x package-refresh-contents=, followed by =M-x package-install RET dash RET= and =M-x package-install RET s RET=.
+
+** Step 2: Download and install =tamil-phonetic.el=
+
+Assuming that you have downloaded (or checked out) the =tamil-phonetic.el= yyyy^{([[https://raw.githubusercontent.com/rnchzn/tamil-phonetic/main/tamil-phonetic.el][1]])} to =~/src/elisp/tamil-phonetic= directory, add the following to your =user-init-file=.
+
+#+begin_src emacs-lisp
+(add-to-list 'load-path
+             "~/src/elisp/tamil-phonetic/")
+
+(require 'tamil-phonetic)
+#+end_src
+
+** Step 3: Configure Tamil fonts, if you haven't already
+
+I prefer Noto fonts^{([[https://packages.debian.org/sid/fonts-noto-core][1]])}.
+
+#+begin_src emacs-lisp
+(set-fontset-font "fontset-default" 'tamil "Noto Sans Tamil")
+#+end_src
+
+** Step 4: Set =tamil-phonetic= as your preferred input method
+
+#+begin_src emacs-lisp
+(custom-set-variables
+ '(default-input-method "tamil-phonetic"))
+#+end_src
+
+** Step 5: Customize =tamil-phonetic=; roll out your own mapping table
+
+Set up the input mapping^{([[https://raw.githubusercontent.com/emacksnotes/emacsnotes.wordpress.com/master/tamil-phonetic/my-tamil-phonetic.el][1]])} as below and restart your Emacs.  (Don't forget this step.)
+
+=tamil-phonetic= installs whatever mappings it sees at the point when it is loaded.  This means that you =(require 'tamil-phonetic)= goes /after/ the custom mapping table, and /not/ before it.
+
+#+begin_src emacs-lisp
+(custom-set-variables
+ '(tamil-phonetic-consonants
+   '(("க்" "k" "g")
+     ("ங்" "ng")
+     ("ச்" "c" "s" "ch")
+     ("ஞ்" "nj" "gn")
+     ("ட்" "t" "d")
+     ("ண்" "n")
+     ("த்" "th" "dh")
+     ("ந்" "nh" "nd" "nnn")
+     ("ப்" "p" "b")
+     ("ம்" "m")
+     ("ய்" "y")
+     ("ர்" "r")
+     ("ல்" "l")
+     ("வ்" "v")
+     ("ழ்" "z" "zh")
+     ("ள்" "L" "ll")
+     ("ற்" "tr" "R" "rr")
+     ("ன்" "N" "nn")
+     ("ஜ்" "j")
+     ("ஷ்" "sh")
+     ("ஸ்" "S")
+     ("ஶ்" "Z")
+     ("ஹ்" "h")
+     ("க்‌ஷ்" "ksh")
+     ("க்ஷ்" "ksH"))))
+#+end_src
+
+** Step 6: Open up a buffer, toggle the input method, and start typing
+
+Do =M-x toggle-input-method= (=C-\=).
+
+You have already told Emacs that =tamil-phonetic= is your =default-input-method=.  So, Emacs wouldn't prompt you with a list of input methods it knows about.
+
+At this point, you are all set.
+
+Here is a overview of how it all looks.
+
+#+CAPTION: =tamil-phonetic= input method in action
+[[./tamil-thaai-vazhththu.png]]
+
+If you are trying out =tamil-phonetic= input method for the first time, you may want to review the input mapping table.  You can do this by =C-h C-\= (=M-x describe-input-method=).
+
+Down below you see visual representation of the input mapping in effect.  Note in particular that most vowels and consonants can be produced in mutiple ways.
+
+#+CAPTION: Input mapping tables for =tamil-phonetic=
+[[./tamil-phonetic-input-mapping-table-1.png]]
+
+#+CAPTION: Input mapping tables for =tamil-phonetic=
+[[./tamil-phonetic-input-mapping-table-2.png]]
+
+* Notes on the Input Mapping Table
+
+Consider these mappings
+
+#+begin_quote
+ண் <------> n\\
+ன் <------>  N
+
+ல் <------> l\\
+ள் <------> L
+
+ர் <------> r\\
+ற் <------> R
+#+end_quote
+
+In the above mappings,
+
+- the "small" / "சின்ன" Tamil-letters map to the corresponding lowercase English-letters, and
+
+- the "big" / "பெரிய" Tamil-letters map to the uppercase English-letters.
+
+The practical problem with uppercase mappings is that you need to remember to engage the =SHIFT= key while typing them.  And if you are going to type a long-form article, then you may have to keep engaging and dis-engaging =SHIFT= very often.  And this constant switching is error-prone, even for a touch typist.
+
+The letter "ந்" poses a problem of its own. It is neither "small" / "சின்ன" or "big" / "பெரிய", nor does it have a /unique/ sound of its own.
+
+As an aside, Gnome's =Tamil (phonetic (m17n))= method maps ="ந்"= to letters ="w"= and ="n-"=.
+
+- Use of ="w"= for ="ந்"= is outright condemnable.  Who in their right mind would set up such a mapping, and yet have the audacity to label the input method as /phonetic/?
+
+- Use of ="n-"= means that you have to stray away from the home row.  Even though I am a touch-typer, I cannot input any of the punctuation characters without also looking at the keyboard.
+
+Fortunately, the strategy used for mapping the tamil vowels provide a nice way out.  That is, when typing the vowels, to move from "short-form" / "குறில்" to "long-form" / "நெடில்", you press the corresponding letter once again.  That is, if you want ="ஆ"=, you press ="a"= twice over.
+
+I have adopted the same strategy in the following mappings:
+
+#+begin_quote
+ண் <------> n\\
+ன் <------> nn\\
+ந்  <------> nnn
+
+ல்  <------> l\\
+ள்  <------> ll\\
+
+ர் <------> r\\
+ற் <------> rr
+#+end_quote
+
+You keep pressing the =n= (or =l= or =r=) until you arrive at the right Tamil-letter.
+
+The following mappings
+
+#+begin_quote
+ந் <------> nd\\
+ற் <------> tr
+#+end_quote
+
+and the mappings I have chosen for rest of the consonants are quite intuitive.  Each "sound" they make, maps to their "natural" English counterparts.
+
+* Problems posed with multiple mappings and how to overcome them
+
+One of the problems posed by the above mappings is that there is a ground for ambiguity.
+
+The ambiguity is best explained with an example. Try typing out the word ="கண்டமிதில்"=, which occurs in "தமிழ்த் தாய் வாழ்த்து".  If you input ="kand"=, you will get ="கந்"= in the buffer.  If you think about it, Emacs is not doing anything wrong; you want some other word.  The way out of the problem is to explicitly tell Emacs when you are "done" with a particular letter and move on to the next letter.  You do this with the command =quail-select-current=, which is mapped to =C-@=, =C-SPC= and =<kp-enter>=.  That is, to get ="கண்டமிதில்"=, you type ="kanC-SPCda"= ---note the use of =C-SPC= here---and you will get ="கண்ட"=, instead of the previous ="கந"=.
+
+#+CAPTION: =C-SPC= is useful for resolving ambiguities
+[[./quail-key-bindings.png]]
+
+* Bonus features:  Transliteration from English to Tamil, and vice versa
+
+The =tamil-phonetic= input method, like all its sister indian input methods, supports transliteration.  This is quite useful.
+
+For example, imagine that you are teaching a non-Tamilian, say a Kannadiga or a Malayalee, how to read, and write Tamil.  Assuming that your medium of instruction is English, you are likely to give him a transliterated version of a Tamil text as an aid for practice.
+
+You can transliterate from Tamil to English, by marking the Tamil text, and invoking =M-x tamil-phonetic-transiterate-tamil->english= on it.
+
+Down below you see the result of Tamil---> English transliteration of "தமிழ்த் தாய் வாழ்த்து".
+
+#+CAPTION: "தமிழ்த் தாய் வாழ்த்து", as transliterated in to English
+[[./tamil-to-english-transliteration.png]]
+
+You can move back from English text to Tamil, if you do =M-x tamil-phonetic-transiterate-english->tamil=.
+
+As an aside ... the transliteration feature is not unique to the =tamil-phonetic= input method.  Most indian languages have an =itrans= input method, and all the =itans= methods support transliteration.  For example, if you have parents who have the habit of reciting /Shlokas/, but cannot read Devanagari, you can transliterate a Devanagari /shloka/ first from Devanagari to English and then from English to your parents' native tongue.  (Try it. Theoretically speaking, it should work.)
+
+* What should the input method for Minibuffer be?  Should it be English or Tamil ...
+
+There is a problem that I noticed when =tamil-phonetic= was active.  The minibuffer also inherits the buffer's input method.  This /"inherit the buffer's input method"/-behaviour may or may not be what you desire.  Given my specific workflow---the task of researching for this article---I wanted the minibuffer to be in English, and not in Tamil.  (To appreciate what I am saying, try typing an =M-x find-library RET=, when =tamil-phonetic= input method is active in the buffer).
+
+To avoid constant toggling of input method as and when I was invoking =M-x=, I added the following hook.
+
+#+begin_src emacs-lisp
+(add-hook 'minibuffer-setup-hook
+          (defun my-deactivate-all-input-methods ()
+            (if current-transient-input-method
+                (deactivate-transient-input-method)
+              (deactivate-input-method))))
+#+end_src
+
+You most likely do /not/ want this hook in your =user-init-file=. If you have this hook, then you wouldn't be able to =C-s= (=isearch-forward=) in Tamil (without also toggling the input method first).
+
+(As an aside, =M-:= doesn't seem to inherit the buffer's input method, and =M-x= should indicate the currently active input method like =C-s= does.)
+
+* Conclusion
+
+I am happy that I stumbled upon =tamil-phonetic=.  Typing in Tamil would no longer be a hassle.
+
+I am eagerly looking forward to the day when the author of =tamil-phonetic= makes good of his promise^{([[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=50143][1]])} and puts his package in ELPA or right in Emacs.
+
+There is one another wish:
+
+#+begin_quote
+Support for /input method completions/ in =helm=, or in any other completion packages
+#+end_quote
+
+/Input Method Completion/ is unlike other completions.  Under normal circumstances, completion frameworks suggest candidates based on a prefix match on typed input.  This /"complete based on partial string match"/-behaviour---the exact behaviour that Emacs =Quail= library implements---may not be that helpful for a user.  This is particularly so if a user is exploring a input method for the first time, and hopes for better assisstance.
+
+To appreciate the above remark, consider the case of =tamil-phonetic= input method.  When a user types ="n"=, this is what he sees
+
+The sheer amount of suggestions is a bit overwhelming. You most likely want to get the "மெய்யெழுத்து" / "consonant" part right, before moving on to "உயிரெழுத்து" / "vowel".  In other words, the suggestions can be pruned.
+
+#+CAPTION: Too many suggestions; It could be improved ...
+[[./quail-completions.png]]
+
+I also imagine that phonetic input methods (in other languages) could benefit from suggestions that are based on /nearness of sound/ as /nearness of typed text/.
+
+# Local Variables:
+# coding: utf-8
+# End:

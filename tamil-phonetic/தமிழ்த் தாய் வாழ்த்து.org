@@ -1,0 +1,33 @@
+#+title: தமிழ்த் தாய் வாழ்த்து
+#+date: <2022-03-06 Sun>
+#+author: Emacksnotes
+#+email: emacksnotes@gmail.com
+#+creator: Emacs 29.0.50 (Org mode 9.5.2)
+
+#+begin_verse
+நீராருங் கடலுடுத்த நிலமடந்தைக் கெழிலொழுகும்
+சீராரும் வதனமெனத் திகழ்பரதக் கண்டமிதில்
+தெக்கணமும் அதிற்சிறந்த திராவிடநல் திருநாடும்
+தக்கசிறு பிறைநுதலும் தரித்தநறுந் திலகமுமே!
+அத்திலக வாசனைபோல் அனைத்துலகும் இன்பமுற
+எத்திசையும் புகழ்மணக்க இருந்தபெருந் தமிழணங்கே!
+தமிழணங்கே!
+
+உன் சீரிளமைத் திறம்வியந்து செயல்மறந்து வாழ்த்துதுமே!
+வாழ்த்துதுமே!
+வாழ்த்துதுமே!
+#+end_verse
+
+#+begin_verse
+nhIrArung katalutuththa nhilamatanhthaik kezilozukum
+cIrArum vathaNameNath thikazparathak kantamithil
+thekkanamum athitrcitranhtha thirAvitanhal thirunhAtum
+thakkacitru pitrainhuthalum thariththanhatrunh thilakamumE!
+aththilaka vAcaNaipOl aNaiththulakum iNpamutra
+eththicaiyum pukazmanakka irunhthaperunh thamizanangkE!
+thamizanangkE!
+
+uN cIriLamaith thitramviyanhthu ceyalmatranhthu vAzththuthumE!
+vAzththuthumE!
+vAzththuthumE!
+#+end_verse
