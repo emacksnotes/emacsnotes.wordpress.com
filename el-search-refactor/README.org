@@ -1,1 +1,1 @@
-
+See [[https://emacsnotes.wordpress.com/2023/07/22/how-to-programmatically-re-write-your-elisp-code-with-el-search-and-el-search-refactor-or-how-to-de-dash-de-s-and-de/][How to programmatically re-write your Elisp code with ‘el-search’ and ‘el-search-refactor’ (Or) How to De-‘dash’, De-‘s’ and De-‘f’ your Elisp Libraries]]
